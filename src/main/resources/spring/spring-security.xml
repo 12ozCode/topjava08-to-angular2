@@ -1,41 +1,43 @@
-<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xmlns="http://www.springframework.org/schema/security"
              xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.springframework.org/schema/security
 	http://www.springframework.org/schema/security/spring-security.xsd">
 
-    <http pattern="/resources/**" security="none"/>
-    <http pattern="/webjars/**" security="none"/>
+    <http pattern="/topjava-rs/resources/**" security="none"/>
+    <http pattern="/topjava-rs/webjars/**" security="none"/>
+    <http pattern="/topjava-rs/i18n/**" security="none"/>
 
-    <http pattern="/rest/**" use-expressions="true" name="restSecurityFilterChain" create-session="stateless">
-        <http-basic/>
-        <intercept-url pattern="/rest/admin/**" access="hasRole('ROLE_ADMIN')"/>
-        <intercept-url pattern="/**" access="isAuthenticated()"/>
+    <http entry-point-ref="entryPoint">
+        <intercept-url pattern="/topjava-rs/login" access="permitAll"/>
+        <intercept-url pattern="/topjava-rs/register" access="permitAll"/>
+
+        <intercept-url pattern="/topjava-rs/**/admin/**" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/topjava-rs/**" access="isAuthenticated()" />
+        <form-login login-page="/topjava-rs/login"
+                    login-processing-url="/topjava-rs/spring_security_check"
+                    authentication-failure-handler-ref="myUrlAuthenticationFailureHandler"
+                    authentication-success-handler-ref="myAuthenticationSuccessHandler"/>
+
         <csrf disabled="true"/>
+        <access-denied-handler ref="customAccessDeniedHandler" />
+        <logout logout-url="/topjava-rs/logout" success-handler-ref="myLogoutSuccessHandler" delete-cookies="JSESSIONID" invalidate-session="true"/>
     </http>
 
-    <http>
-        <intercept-url pattern="/login" access="permitAll"/>
-        <intercept-url pattern="/register" access="permitAll"/>
 
-        <intercept-url pattern="/**/admin/**" access="hasRole('ROLE_ADMIN')"/>
-        <intercept-url pattern="/**" access="isAuthenticated()"/>
-
-        <form-login login-page="/login" default-target-url="/meals"
-                    authentication-failure-url="/login?error=true"
-                    login-processing-url="/spring_security_check"/>
-        <logout logout-success-url="/login"/>
-        <!--<csrf disabled="true"/>-->
-    </http>
+    <beans:bean id="entryPoint" class="ru.javawebinar.topjava.web.handler.CustomRestAuthenticationEntryPoint"/>
+    <beans:bean id="myAuthenticationSuccessHandler" class="ru.javawebinar.topjava.web.handler.CustomSavedRequestAwareAuthenticationSuccessHandler" />
+    <beans:bean id="myUrlAuthenticationFailureHandler" class="ru.javawebinar.topjava.web.handler.CustomUrlAuthenticationFailureHandler" />
+    <beans:bean id="myLogoutSuccessHandler" class="ru.javawebinar.topjava.web.handler.CustomLogoutSuccessHandler" />
+    <beans:bean id="customAccessDeniedHandler" class="ru.javawebinar.topjava.web.handler.CustomAccessDeniedHandler" />
 
     <beans:bean class="ru.javawebinar.topjava.util.PasswordUtil" id="passwordEncoder" factory-method="getPasswordEncoder"/>
 
     <authentication-manager>
         <authentication-provider user-service-ref="userService">
             <password-encoder ref="passwordEncoder"/>
-
             <!--
                         <jdbc-user-service data-source-ref="dataSource"
                                            users-by-username-query="SELECT email, password, enabled FROM users WHERE email = ?"

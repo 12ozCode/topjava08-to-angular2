@@ -1,0 +1,61 @@
+<div class="jumbotron">
+    <div class="container">
+        <div class="shadow">
+
+            <h2>{{profileForm ? (authService.authenticatedAs.name + ' ' + ('app.profile' | i18nPipe))
+                : ('app.register' | i18nPipe)}}</h2>
+
+            <div class="view-box">
+                <form class="form-horizontal"
+                      charset="utf-8"
+                      accept-charset="UTF-8"
+                      [formGroup]="profileForm">
+                    <div class="form-group ">
+                        <div class="control-label col-xs-2">
+                            <label for="name">{{'users.name' | i18nPipe}}</label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input [formControl]="profileForm.controls['name']" id="name" name="name"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group ">
+                        <div class="control-label col-xs-2">
+                            <label for="email">{{'users.email' | i18nPipe}}</label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input [formControl]="profileForm.controls['email']" id="email" name="email"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group ">
+                        <div class="control-label col-xs-2">
+                            <label for="password">{{'users.password' | i18nPipe}}</label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input [formControl]="profileForm.controls['password']" id="password" name="password"
+                                   type="password">
+                        </div>
+                    </div>
+
+                    <div class="form-group ">
+                        <div class="control-label col-xs-2">
+                            <label for="caloriesPerDay">{{'users.caloriesPerDay' | i18nPipe}}</label>
+                        </div>
+                        <div class="col-xs-8">
+                            <input [formControl]="profileForm.controls['caloriesPerDay']" id="caloriesPerDay"
+                                   type="number"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-offset-2 col-xs-10">
+                            <button type="button" [disabled]="!profileForm.valid" (click)="save()"
+                                    class="btn btn-primary">{{profileForm ? ('common.update' | i18nPipe) : ('app.register' | i18nPipe)}}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

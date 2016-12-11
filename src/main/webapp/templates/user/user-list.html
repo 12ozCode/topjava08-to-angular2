@@ -1,0 +1,52 @@
+<div class="jumbotron">
+    <div class="container">
+        <div class="shadow">
+            <h3>{{'users.title' | i18nPipe}}</h3>
+
+            <div class="view-box">
+                <!--grid-->
+                <p-dataTable [value]="usersHolder | async" (onRowSelect)="onEdit($event)" selectionMode="single"
+                             [paginator]="true" rows="10" [responsive]="true">
+                    <p-column field="name" [sortable]="true" header="{{'users.name' | i18nPipe}}"
+                              [filter]="true"></p-column>
+                    <p-column field="email" [sortable]="true" header="{{'users.email' | i18nPipe}}"
+                              [filter]="true"></p-column>
+                    <p-column field="roles" [sortable]="true" header="{{'users.roles' | i18nPipe}}"
+                              [filter]="true"></p-column>
+                    <p-column field="enabled" [sortable]="true"
+                              [style]="{'width':'100px','text-align': 'center','vertical-align': 'middle'}">
+                        <template pTemplate type="header">
+                            {{'users.active' | i18nPipe}}
+                        </template>
+                        <template pTemplate type="body" let-user="rowData">
+                            <input type="checkbox" [(ngModel)]="user.enabled" (click)="onChangeActiveStatus(user)">
+                        </template>
+                    </p-column>
+                    <p-column field="registered" [sortable]="true">
+                        <template pTemplate type="header">
+                            {{'users.registered' | i18nPipe}}
+                        </template>
+                        <template pTemplate type="body" let-user="rowData">
+                            {{user.registered | date:'y-MM-dd HH:mm'}}
+                        </template>
+                    </p-column>
+                    <p-column [style]="{'width':'120px'}">
+                        <template pTemplate type="header">
+                            {{'common.delete' | i18nPipe}}
+                        </template>
+                        <template pTemplate type="body" let-user="rowData">
+                            <button pButton (click)="onDelete(user)" label="{{'common.delete' | i18nPipe}}"></button>
+                        </template>
+                    </p-column>
+                    <footer>
+                        <div class="ui-helper-clearfix" style="width:100%">
+                            <button type="button" pButton icon="fa-plus" style="float:left"
+                                    (click)="showCreateModal()" label="{{'users.add' | i18nPipe}}"></button>
+                        </div>
+                    </footer>
+                </p-dataTable>
+            </div>
+        </div>
+    </div>
+</div>
+<user-edit (onSaveEvent)="onSave($event)"></user-edit>

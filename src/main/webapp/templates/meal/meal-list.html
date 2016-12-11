@@ -1,0 +1,93 @@
+<div class="jumbotron">
+    <div class="container">
+        <div class="shadow">
+            <h3>{{'meals.title' | i18nPipe}}</h3>
+
+            <div class="view-box">
+
+
+                <div class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="startDate">{{'meals.startDate' | i18nPipe}}</label>
+
+                        <div class="col-sm-3" id="startDate">
+                            <p-calendar [(ngModel)]="startDate" dateFormat="yy-mm-dd"
+                                        [showIcon]="true"></p-calendar>
+                        </div>
+
+
+                        <label class="control-label col-sm-2" for="endDate">{{'meals.endDate' | i18nPipe}}</label>
+
+                        <div class="col-sm-3" id="endDate">
+                            <p-calendar [(ngModel)]="endDate" dateFormat="yy-mm-dd"
+                                        [showIcon]="true"></p-calendar>
+                        </div>
+
+                        <button type="button" class="btn btn-primary pull-right" (click)="onFilter()">
+                            {{'meals.filter' |
+                            i18nPipe}}
+                        </button>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="startTime">{{'meals.startTime' | i18nPipe}}</label>
+
+                        <div class="col-sm-3" id="startTime">
+                            <p-calendar [(ngModel)]="startTime" timeOnly="true" hourFormat="24"
+                                        [showIcon]="true"></p-calendar>
+                        </div>
+
+
+                        <label class="control-label col-sm-2" for="endTime">{{'meals.endTime' | i18nPipe}}</label>
+
+                        <div class="col-sm-3" id="endTime">
+                            <p-calendar
+                                    [(ngModel)]="endTime"
+                                    timeOnly="true"
+                                    showTime="showTime"
+                                    hourFormat="24"
+                                    [showIcon]="true">
+                            </p-calendar>
+                        </div>
+
+                        <button type="button" class="btn btn-danger pull-right" (click)="clearFilters()">
+                            {{'meals.clearFilter' | i18nPipe}}
+                        </button>
+                    </div>
+
+                    <br/>
+
+                    <p-dataTable [value]="(mealsHolder | async)" selectionMode="single" [rowStyleClass]="getRowClass"
+                                 (onRowSelect)="selectMeal($event)" [paginator]="true" rows="10" [responsive]="true">
+
+                        <p-column field="dateTime" [sortable]="true" header="{{'meals.dateTime' | i18nPipe}}">
+                            <template let-meal="rowData" pTemplate type="body">
+                                {{meal.dateTime | date:'y-MM-dd HH:mm'}}
+                            </template>
+                        </p-column>
+
+                        <p-column field="description" header="{{'meals.description' | i18nPipe}}" [filter]="true"
+                                  [sortable]="true"></p-column>
+                        <p-column field="calories" header="{{'meals.calories' | i18nPipe}}"
+                                  [sortable]="true"></p-column>
+
+                        <p-column [style]="{width : '120px'}">
+                            <template let-meal="rowData" pTemplate type="body">
+                                <button type="button" pButton (click)="deleteItem(meal)"
+                                        label="{{'common.delete' | i18nPipe}}"></button>
+                            </template>
+                        </p-column>
+                        <footer>
+                            <div class="ui-helper-clearfix" style="width:100%">
+                                <button type="button" pButton icon="fa-plus" style="float:left"
+                                        (click)="showCreateModal()" label="{{'meals.add' | i18nPipe}}"></button>
+                            </div>
+                        </footer>
+                    </p-dataTable>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<edit-meal (onSaveEvent)="save($event)"></edit-meal>

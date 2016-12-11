@@ -3,7 +3,7 @@
 }
 
 .exceeded {
-    color: red;
+    color: red !important;
 }
 
 .footer {
